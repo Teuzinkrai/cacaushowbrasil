@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cacau Show Brasil - Novo Site</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #fff8f0; }
+    header { background: #5d2c02; color: white; padding: 20px; text-align: center; }
+    .categoria { padding: 20px; }
+    .categoria h2 { color: #5d2c02; }
+    .produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .produto { background: white; padding: 10px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center; }
+    .produto img { max-width: 100%; border-radius: 8px; height: 180px; object-fit: cover; }
+    .produto button { margin-top: 10px; background: #5d2c02; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+    .carrinho { position: fixed; bottom: 0; width: 100%; background: #5d2c02; color: white; padding: 10px; text-align: center; }
+    footer { padding: 20px; text-align: center; background: #f0e0d6; margin-top: 40px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cacau Show Brasil</h1>
+    <p>Promoção válida até 19/04 às 23:59 - Frete grátis! Entrega em 1 a 2 dias úteis.</p>
+  </header>
+  <div id="produtos-container"></div>
+  <div class="carrinho">
+    Total: R$ <span id="total">0.00</span>
+  </div>
+  <footer>
+    <p>Reembolso garantido em até 7 dias após a compra</p>
+  </footer>
+  <script>
+    const ovos = [
+      {nome: 'Ao Leite', preco: 29.90, imagem: 'https://images.unsplash.com/photo-1606312619344-cd3c8c657c07', link: 'https://pag.ae/7_yNM92Vt'},
+      {nome: 'Amargo 70%', preco: 29.90, imagem: 'https://images.unsplash.com/photo-1610551513300-6f9b1bdf3b2e', link: 'https://pag.ae/7_yNM92Vt'},
+      {nome: 'Chocolate Branco', preco: 29.90, imagem: 'https://images.unsplash.com/photo-1645554107236-ec3894a05bde', link: 'https://pag.ae/7_yNM92Vt'},
+      {nome: 'Meio Amargo', preco: 29.90, imagem: 'https://images.unsplash.com/photo-1590080876995-995d3a213f20', link: 'https://pag.ae/7_yNM92Vt'},
+      {nome: 'Crocante', preco: 29.90, imagem: 'https://images.unsplash.com/photo-1589310243709-3d99be8e34d5', link: 'https://pag.ae/7_yNM92Vt'},
+      {nome: 'Cookies', preco: 29.90, imagem: 'https://images.unsplash.com/photo-1590008206089-b9b74fd98afc', link: 'https://pag.ae/7_yNM92Vt'},
+      {nome: 'Zero Açúcar', preco: 29.90, imagem: 'https://images.unsplash.com/photo-1606312619344-cd3c8c657c07', link: 'https://pag.ae/7_yNM92Vt'},
+      {nome: 'Ao Leite com Castanha', preco: 29.90, imagem: 'https://images.unsplash.com/photo-1645554107236-ec3894a05bde', link: 'https://pag.ae/7_yNM92Vt'},
+      {nome: 'Ao Leite com Coco', preco: 29.90, imagem: 'https://images.unsplash.com/photo-1589310243709-3d99be8e34d5', link: 'https://pag.ae/7_yNM92Vt'},
+      {nome: 'Diet', preco: 29.90, imagem: 'https://images.unsplash.com/photo-1590008206089-b9b74fd98afc', link: 'https://pag.ae/7_yNM92Vt'},
+      {nome: 'Brigadeiro', preco: 49.90, imagem: 'https://images.unsplash.com/photo-1600377448364-002bd8de1d42', link: 'https://pag.ae/7_yNNcYKo'},
+      {nome: 'Nutella', preco: 49.90, imagem: 'https://images.unsplash.com/photo-1617450365226-bb3b9399c5c0', link: 'https://pag.ae/7_yNNcYKo'},
+      {nome: 'Ninho', preco: 49.90, imagem: 'https://images.unsplash.com/photo-1622878887493-f0578f172a05', link: 'https://pag.ae/7_yNNcYKo'},
+      {nome: 'Doce de Leite', preco: 49.90, imagem: 'https://images.unsplash.com/photo-1589223419309-8796f4b8e2ef', link: 'https://pag.ae/7_yNNcYKo'},
+      {nome: 'Morango com Creme', preco: 49.90, imagem: 'https://images.unsplash.com/photo-1600377448364-002bd8de1d42', link: 'https://pag.ae/7_yNNcYKo'},
+      {nome: 'Maracujá', preco: 49.90, imagem: 'https://images.unsplash.com/photo-1589310243709-3d99be8e34d5', link: 'https://pag.ae/7_yNNcYKo'},
+      {nome: 'Mousse de Limão', preco: 49.90, imagem: 'https://images.unsplash.com/photo-1600377448364-002bd8de1d42', link: 'https://pag.ae/7_yNNcYKo'},
+      {nome: 'Beijinho', preco: 49.90, imagem: 'https://images.unsplash.com/photo-1590080876995-995d3a213f20', link: 'https://pag.ae/7_yNNcYKo'},
+      {nome: 'Oreo', preco: 49.90, imagem: 'https://images.unsplash.com/photo-1645554107236-ec3894a05bde', link: 'https://pag.ae/7_yNNcYKo'},
+      {nome: 'Paçoca', preco: 49.90, imagem: 'https://images.unsplash.com/photo-1589310243709-3d99be8e34d5', link: 'https://pag.ae/7_yNNcYKo'},
+      {nome: 'Trufa Belga', preco: 69.90, imagem: 'https://images.unsplash.com/photo-1617450365226-bb3b9399c5c0', link: 'https://pag.ae/7_yNNsTVo'},
+      {nome: 'Gianduia', preco: 69.90, imagem: 'https://images.unsplash.com/photo-1622878887493-f0578f172a05', link: 'https://pag.ae/7_yNNsTVo'},
+      {nome: 'Gold Caramelo', preco: 69.90, imagem: 'https://images.unsplash.com/photo-1589223419309-8796f4b8e2ef', link: 'https://pag.ae/7_yNNsTVo'},
+      {nome: 'Ruby com Pistache', preco: 69.90, imagem: 'https://images.unsplash.com/photo-1600377448364-002bd8de1d42', link: 'https://pag.ae/7_yNNsTVo'},
+      {nome: 'Pérola Negra', preco: 69.90, imagem: 'https://images.unsplash.com/photo-1610551513300-6f9b1bdf3b2e', link: 'https://pag.ae/7_yNNsTVo'},
+      {nome: 'Ganache com Framboesa', preco: 69.90, imagem: 'https://images.unsplash.com/photo-1589310243709-3d99be8e34d5', link: 'https://pag.ae/7_yNNsTVo'},
+      {nome: 'Praliné de Avelã', preco: 69.90, imagem: 'https://images.unsplash.com/photo-1590008206089-b9b74fd98afc', link: 'https://pag.ae/7_yNNsTVo'},
+      {nome: 'Crocante Gourmet', preco: 69.90, imagem: 'https://images.unsplash.com/photo-1645554107236-ec3894a05bde', link: 'https://pag.ae/7_yNNsTVo'},
+      {nome: 'Doce de Leite Argentino', preco: 69.90, imagem: 'https://images.unsplash.com/photo-1606312619344-cd3c8c657c07', link: 'https://pag.ae/7_yNNsTVo'},
+      {nome: 'Chocolate com Champagne', preco: 69.90, imagem: 'https://images.unsplash.com/photo-1590080876995-995d3a213f20', link: 'https://pag.ae/7_yNNsTVo'}
+    ];
+
+    const container = document.getElementById('produtos-container');
+    let total = 0;
+
+    function atualizarTotal() {
+      document.getElementById('total').innerText = total.toFixed(2);
+    }
+
+    function adicionarProduto(produto) {
+      total += produto.preco;
+      atualizarTotal();
+      window.open(produto.link, '_blank');
+    }
+
+    const categorias = [
+      {nome: 'Ovos Simples', inicio: 0, fim: 10},
+      {nome: 'Ovos Recheados', inicio: 10, fim: 20},
+      {nome: 'Ovos Gourmet', inicio: 20, fim: 30},
+    ];
+
+    categorias.forEach(cat => {
+      const secao = document.createElement('div');
+      secao.className = 'categoria';
+      secao.innerHTML = `<h2>${cat.nome}</h2><div class="produtos"></div>`;
+      const grid = secao.querySelector('.produtos');
+      ovos.slice(cat.inicio, cat.fim).forEach(ovo => {
+        const card = document.createElement('div');
+        card.className = 'produto';
+        card.innerHTML = `
+          <img src="${ovo.imagem}" alt="${ovo.nome}">
+          <h3>${ovo.nome}</h3>
+          <p>R$ ${ovo.preco.toFixed(2)}</p>
+          <button onclick='adicionarProduto(${JSON.stringify(ovo)})'>Comprar</button>
+        `;
+        grid.appendChild(card);
+      });
+      container.appendChild(secao);
+    });
+  </script>
+</body>
+</html>
